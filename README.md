@@ -7,3 +7,10 @@ This is a simple script which gathers ansible facts from a host and uses the jtr
 ***NOTE:*** *If you are not in a location that is configured to use your ansible inventory file, and you try to pass a hostname, this will fail*
 
 ***The script will check if you have the necessary jtree python module installed and prompt you with directions on how to install it if not found***
+
+### Quickstart
+```
+curl -sO https://raw.githubusercontent.com/chipatredhat/factstree/refs/heads/main/factstree
+chmod +x factstree
+./factstree
+```
