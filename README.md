@@ -10,6 +10,10 @@ This is a simple script which gathers ansible facts from a host and uses the jtr
 curl -sO https://raw.githubusercontent.com/chipatredhat/factstree/refs/heads/main/factstree
 chmod +x factstree
 ./factstree
+or
+```
+```
+./factstree <hostname>
 ```
 
 ***NOTES:*** 
