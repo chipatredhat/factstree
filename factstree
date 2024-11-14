@@ -1,24 +1,25 @@
 #!/bin/sh
 
 # Make sure we have jtree installed
-if ! $(python -c "import jtree") ; then echo -e "\njtree doesn't appear to be installed.  Please install with \"python -m pip install jtree\" and rerun factstree\n\n" ; exit ; fi
+if ! $(python -c "import jtree") ; then echo -e "\njtree doesn't appear to be installed.  Please install with \"python -m pip install jtree\" and rerun factstree" ; exit ; fi
 
 # If a hostname isn't passed as an arguement, then use localhost
 TARGETHOST=localhost ; [[ "${1}" ]] && TARGETHOST="${1}"
 
-# Set the temp file name for the facts
-FACTSFILE="/tmp/factstree.$(date +"%s").tmp"
+# Set the temp directory name for the facts
+FACTSDIR="/tmp/factstree.$(date +"%s").tmp"
 
-# Get the facts, clean it up, and write it to the temp file
-# Use ansible.builtin.setup as a module and run it against ${TARGETHOST}
-# Remove the top two lines which contain ansible return information that hinders json parsing
-# Add the opening { in the json file that was removed in the previous command
-# Remove the last three lines of the file which hinder clean json parsing
-# Append }} to the end of the file to properly close the json and tie up the previous changes we had to make
-ansible ${TARGETHOST} -m ansible.builtin.setup | tail -n +2 | sed '1s/^/{/' | head -n -3 | sed '$a}}' > ${FACTSFILE}
+# Make the FACTSDIR directory
+mkdir -p ${FACTSDIR}
+
+# Let the user know we are gathering facts
+echo -e "\nProceeding to gather facts for ${TARGETHOST}.  Please be patient....\n"
+
+# Get the facts using the setup module and write them to ${FACTSDIR}/${TARGETHOST} using -t while supressing output to console
+ansible ${TARGETHOST} -m setup -t ${FACTSDIR} > /dev/null
 
 # Display the facts in jtree
-jtree ${FACTSFILE}
+jtree ${FACTSDIR}/${TARGETHOST}
 
-# Remove the temp file
-rm ${FACTSFILE}
+# Remove ${FACTSDIR}
+rm -rf ${FACTSDIR}
